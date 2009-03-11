@@ -1,0 +1,633 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!-- Vertical Form -->
+<Frame name="QuickMarkVerticalForm" hidden="true" parent="UIParent" movable="true" enableMouse="true">
+    <!-- Layout -->
+    <Size>
+      <AbsDimension x="48" y="240" />
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent">
+        <Offset>
+          <AbsDimension x="0" y="0" />
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <TitleRegion setAllPoints="true" />
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+      <BackgroundInsets>
+        <AbsInset left="11" right="12" top="12" bottom="11" />
+      </BackgroundInsets>
+      <TileSize>
+        <AbsValue val="32" />
+      </TileSize>
+      <EdgeSize>
+        <AbsValue val="32" />
+      </EdgeSize>
+    </Backdrop>
+	
+    <!-- Buttons -->
+    <Frames>
+        <!-- Star Button -->
+        <Button name="StarButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-20" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(1);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0" right="0.25" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.03" right="0.22" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Circle Button -->
+        <Button name="CircleButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-42" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(2);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.25" right="0.5" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.28" right="0.47" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Diamond Button -->
+        <Button name="DiamondButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-64" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(3);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.5" right="0.75" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.53" right="0.72" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Triangle Button -->
+        <Button name="TriangleButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-86" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(4);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.75" right="1" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.78" right="0.97" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Moon Button -->
+        <Button name="MoonButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-108" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(5);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0" right="0.25" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.03" right="0.22" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Square Button -->
+        <Button name="SquareButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-130" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(6);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.25" right="0.5" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.28" right="0.47" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Cross Button -->
+        <Button name="CrossButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-152" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(7);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.5" right="0.75" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.53" right="0.72" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Skull Button -->
+        <Button name="SkullButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-174" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(8);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.75" right="1" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.78" right="0.97" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        
+        
+        <!-- Close Button -->
+        <Button name="CloseButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="15" y="-210" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMarkVerticalForm:Hide();
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-up">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-down">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+                </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-highlight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+    </Frames>
+    <Scripts>
+        <OnLoad>
+            QuickMark_OnLoad();
+        </OnLoad>
+    </Scripts>
+</Frame>
+
+<!-- Horizontal Form -->
+<Frame name="QuickMarkHorizontalForm" hidden="true" parent="UIParent" movable="true" enableMouse="true">
+    <!-- Layout -->
+    <Size>
+      <AbsDimension x="240" y="48" />
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent">
+        <Offset>
+          <AbsDimension x="0" y="0" />
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <TitleRegion setAllPoints="true" />
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+      <BackgroundInsets>
+        <AbsInset left="11" right="12" top="12" bottom="11" />
+      </BackgroundInsets>
+      <TileSize>
+        <AbsValue val="32" />
+      </TileSize>
+      <EdgeSize>
+        <AbsValue val="32" />
+      </EdgeSize>
+    </Backdrop>
+	
+    <!-- Buttons -->
+    <Frames>
+        <!-- Star Button -->
+        <Button name="StarButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="20" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(1);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0" right="0.25" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.03" right="0.22" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Circle Button -->
+        <Button name="CircleButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="42" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(2);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.25" right="0.5" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.28" right="0.47" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Diamond Button -->
+        <Button name="DiamondButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="64" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(3);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.5" right="0.75" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.53" right="0.72" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Triangle Button -->
+        <Button name="TriangleButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="86" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(4);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.75" right="1" top="0" bottom="0.25" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.78" right="0.97" top="0.03" bottom="0.22" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Moon Button -->
+        <Button name="MoonButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="108" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(5);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0" right="0.25" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.03" right="0.22" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Square Button -->
+        <Button name="SquareButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="130" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(6);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.25" right="0.5" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.28" right="0.47" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Cross Button -->
+        <Button name="CrossButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="152" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(7);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.5" right="0.75" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.53" right="0.72" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        <!-- Skull Button -->
+        <Button name="SkullButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="174" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMark_MarkCurrentTarget(8);
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.75" right="1" top="0.25" bottom="0.5" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\targetingframe\ui-raidtargetingicons">
+                <TexCoords left="0.78" right="0.97" top="0.28" bottom="0.47" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+            </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\checkbuttonhilight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+        
+        
+        <!-- Close Button -->
+        <Button name="CloseButton">
+            <Size>
+                <AbsDimension x="20" y="20" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT">
+                    <Offset>
+                        <AbsDimension x="210" y="-15" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    QuickMarkHorizontalForm:Hide();
+                </OnClick>
+            </Scripts>
+            <NormalTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-up">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </NormalTexture>
+            <PushedTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-down">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </PushedTexture>
+            <DisabledTexture setAllPoints="true" file="Interface\Buttons\UI-Panel-Button-Disabled">
+                <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+                </DisabledTexture>
+            <HighLightTexture name="$parentTexture" setAllPoints="true" file="interface\buttons\ui-panel-minimizebutton-highlight" alphaMode="ADD">
+                <TexCoords left="0" right="1" top="0" bottom="1" />
+            </HighLightTexture>
+        </Button>
+        
+    </Frames>
+    <Scripts>
+    </Scripts>
+</Frame>
+</Ui>
