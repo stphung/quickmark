@@ -1,10 +1,10 @@
-## Interface: 30000
+## Interface: 40000
 ## Title: QuickMark
-## Author: stphung, SnowCold (Circle of Eight) Ghostlands Server
-## Version: 2.0
 ## Notes: QuickMark allows you to set the raid target icon of units quickly rather than having to go through the right-click menu or create keybindings.
-## DefaultState: Enabled
-## LoadOnDemand: 0
-## SavedVariables:  QuickMark_isVertical
-QuickMark.lua
-QuickMarkForm.xml
+## Author: stphung, MarZk44
+## Version: 3.1415926
+## SavedVariables: QuickMarkDB
+
+embeds.xml
+AceGUIWidget-QuickMarkFrame.lua
+Core.lua
