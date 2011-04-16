@@ -1,4 +1,53 @@
 local QuickMark = LibStub("AceAddon-3.0"):NewAddon("QuickMark", "AceConsole-3.0")
+
+--------------------------------------------------------------------------------
+-- Options
+--------------------------------------------------------------------------------
+local options = {
+    name = "QuickMark",
+    handler = QuickMark,
+    type = 'group',
+    args = {
+       -- Locking
+       lockGui = {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'ToggleLocked', get = 'IsLocked', cmdHidden = true},
+       lock =    {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked',    get = 'IsLocked', guiHidden = true},
+       l =       {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked',    get = 'IsLocked', guiHidden = true},
+       unlock =  {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
+       u =       {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
+
+       -- Flip
+       flip = {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
+       f =    {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
+
+       -- Horizontal
+       horizontalGui = {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'Flip',          get = 'GetHorizontal', cmdHidden = true},
+       horizontal =    {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true },
+       hor =           {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true},
+
+       -- Vertical
+       vertical = {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
+       vert =     {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
+
+       -- Hide
+       hideGui = {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', cmdHidden = true},
+       hide =    {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
+       h =       {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
+
+       -- Show
+       show = {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar', set = 'SetShown', get = 'IsShown', guiHidden = true},
+       s =    {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar', set = 'SetShown', get = 'IsShown', guiHidden = true},
+
+       -- Toggle
+       toggle = {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
+       t =      {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
+
+       -- Scale
+       scale = {type = 'range', name = 'Scale', desc = 'Scale controls the size of the QuickMark bar.', set = 'SetScale', get = 'GetScale', min = 0.1, max = 5.0, cmdHidden = true}
+    },
+}
+
+LibStub("AceConfigDialog-3.0"):AddToBlizOptions("QuickMark", "QuickMark")
+LibStub("AceConfig-3.0"):RegisterOptionsTable("QuickMark", options, {"quickmark", "qm"})
 local AceGUI = LibStub("AceGUI-3.0")
 
 --------------------------------------------------------------------------------
@@ -14,22 +63,14 @@ function QuickMark:CreateQuickMarkFrame()
       targetIcon:SetHeight(20)
       targetIcon:SetImageSize(20,20)
       targetIcon:SetCallback("OnClick", function()
-				       if GetRaidTargetIndex("target") ~= i then
-					  SetRaidTarget("target", i)
-				       else
-					  SetRaidTarget("target", 0)
-				       end
-				    end)
+                                           if GetRaidTargetIndex("target") ~= i then
+                                              SetRaidTarget("target", i)
+                                           else
+                                              SetRaidTarget("target", 0)
+                                           end
+                                        end)
       qmFrame:AddChild(targetIcon)
    end
-
-   local closeIcon = AceGUI:Create("Icon")
-   closeIcon:SetImage("INTERFACE/BUTTONS/CancelButton-Up")
-   closeIcon:SetWidth(20)
-   closeIcon:SetHeight(20)
-   closeIcon:SetImageSize(20,20)
-   closeIcon:SetCallback("OnClick", function() QuickMark:Hide() end)
-   qmFrame:AddChild(closeIcon)
 
    return qmFrame
 end
@@ -38,36 +79,88 @@ local QM_FRAME = QuickMark:CreateQuickMarkFrame()
 local DEBUG = false
 
 --------------------------------------------------------------------------------
--- COMMAND FUNCTIONS
+-- Layout
 --------------------------------------------------------------------------------
 function QuickMark:SetHorizontalLayout()
-   QM_FRAME:SetWidth(215)
+   QM_FRAME:SetWidth(195)
    QM_FRAME:SetHeight(48)
    QM_FRAME:SetLayout("Flow")
    self.db.char.horizontal = true
-   QuickMark:Print("Horizontal Layout")
+   if DEBUG then QuickMark:Print("Horizontal Layout") end
+   return self.db.char.horizontal
 end
 
 function QuickMark:SetVerticalLayout()
    QM_FRAME:SetWidth(45)
-   QM_FRAME:SetHeight(280)
+   QM_FRAME:SetHeight(260)
    QM_FRAME:SetLayout("List")
-   self.db.char.horizontal = false
-   QuickMark:Print("Vertical Layout")
+   QuickMark.db.char.horizontal = false
+   if DEBUG then QuickMark:Print("Vertical Layout") end
+   return self.db.char.horizontal
 end
 
+function QuickMark:GetHorizontal(info)
+   return self.db.char.horizontal
+end
+
+function QuickMark:SetHorizontal(info, input)
+   return QuickMark:SetHorizontalLayout()
+end
+
+function QuickMark:GetVertical(info)
+   return not self.db.char.horizontal
+end
+
+function QuickMark:SetVertical(info, input)
+   return QuickMark:SetVerticalLayout()
+end
+
+function QuickMark:Flip(info, input)
+   if self.db.char.horizontal then
+      QuickMark:SetVerticalLayout()
+   else
+      QuickMark:SetHorizontalLayout()
+   end
+end
+
+--------------------------------------------------------------------------------
+-- Locking
+--------------------------------------------------------------------------------
 function QuickMark:Lock()
    QM_FRAME:Lock()
    self.db.char.locked = true
-   QuickMark:Print("Locked")
+   if DEBUG then QuickMark:Print("Locked") end
 end
 
 function QuickMark:Unlock()
    QM_FRAME:Unlock()
    self.db.char.locked = false
-   QuickMark:Print("Unlocked")
+   if DEBUG then QuickMark:Print("Unlocked") end
 end
 
+function QuickMark:IsLocked(info)
+   return self.db.char.locked
+end
+
+function QuickMark:ToggleLocked(info, input)
+   if self.db.char.locked then
+      QuickMark:Unlock()
+   else
+      QuickMark:Lock()
+   end
+end
+
+function QuickMark:SetLocked(info, input)
+   QuickMark:Lock()
+end
+
+function QuickMark:SetUnlocked(info, input)
+   QuickMark:Unlock()
+end
+
+--------------------------------------------------------------------------------
+-- Positioning
+--------------------------------------------------------------------------------
 function QuickMark:SetPosition(point, relativePoint, x, y)
    QM_FRAME:ClearAllPoints()
    QM_FRAME:SetPoint(point, UIParent, relativePoint, x, y)
@@ -76,40 +169,68 @@ function QuickMark:SetPosition(point, relativePoint, x, y)
    end
 end
 
-function QuickMark:SetScale(scale)
+--------------------------------------------------------------------------------
+-- Scaling
+--------------------------------------------------------------------------------
+function QuickMark:Scale(scale)
    QM_FRAME.frame:SetScale(scale)
    self.db.char.scale = scale
-   QuickMark:Print("Scale set to " .. scale*100 .. "%")
+   if DEBUG then QuickMark:Print("Scale set to " .. scale*100 .. "%") end
+end
+
+function QuickMark:GetScale(info)
+   return self.db.char.scale
+end
+
+function QuickMark:SetScale(info, scale)
+   QuickMark:Scale(scale)
+end
+
+--------------------------------------------------------------------------------
+-- Displaying
+--------------------------------------------------------------------------------
+function QuickMark:Toggle()
+   if self.db.char.hidden then
+      return QuickMark:Show()
+   else
+      return QuickMark:Hide()
+   end
 end
 
 function QuickMark:Show()
    QM_FRAME:Show()
    self.db.char.hidden = false
-   QuickMark:Print("Shown")
+   if DEBUG then QuickMark:Print("Shown") end
 end
 
 function QuickMark:Hide()
    QM_FRAME:Hide()
    self.db.char.hidden = true
-   QuickMark:Print("Hidden")
+   if DEBUG then QuickMark:Print("Hidden") end
 end
 
-function QuickMark:Toggle()
+function QuickMark:IsShown(info)
+   return not self.db.char.hidden
+end
+
+function QuickMark:IsHidden(info)
+   return self.db.char.hidden
+end
+
+function QuickMark:SetShown(info, input)
+   QuickMark:Show()
+end
+
+function QuickMark:SetHidden(info, input)
+   QuickMark:Hide()
+end
+
+function QuickMark:ToggleHidden(info, input)
    if self.db.char.hidden then
       QuickMark:Show()
    else
       QuickMark:Hide()
    end
-end
-
-function QuickMark:AutoToggle()
-	if AutoToggle == true then
-	AutoToggle=false
-	QuickMark:Print("AutoToggle off")
-	else
-	AutoToggle=true
-	QuickMark:Print("AutoToggle on")
-	end
 end
 
 -- DEPRECATED: Only here for those using the 2.0 API, use QuickMark:Toggle() instead.
@@ -118,53 +239,8 @@ function QuickMark_ToggleForm()
 end
 
 --------------------------------------------------------------------------------
--- SLASH COMMAND PROCESSOR
+-- Load Settings
 --------------------------------------------------------------------------------
-function QuickMark:SlashProcessor(input)
-   if string.find(input, "scale") == 1 then
-      local scale = string.match(input, "%d+")
-      if scale ~= nil then
-	 QuickMark:SetScale(scale/100.0)
-      else
-	 QuickMark:Print("Bad input to scale")
-      end
-   elseif input == "at" or input == "autotoggle" then
-      QuickMark:AutoToggle()
-   elseif input == "s" or input == "show" then
-      QuickMark:Show()
-   elseif input == "h" or input == "hide" then
-      QuickMark:Hide()
-   elseif input == "t" or input == "toggle" then
-      QuickMark:Toggle()
-   elseif input == "vert" or input == "vertical" then
-      QuickMark:SetVerticalLayout()
-   elseif input == "hor" or input == "horizontal" then
-      QuickMark:SetHorizontalLayout()
-   elseif input == "f" or input == "flip" then
-      if self.db.char.horizontal then
-	 QuickMark:SetVerticalLayout()
-      else
-	 QuickMark:SetHorizontalLayout()
-      end
-   elseif input == "l" or input == "lock" then
-      QuickMark:Lock()
-   elseif input == "u" or input == "unlock" then
-      QuickMark:Unlock()
-   else
-      QuickMark:Print("usage: /qm [s, show | h, hide | t toggle | hor horizontal | vert vertical | f flip | l lock | u unlock | at autotoggle | scale n.m]")
-      QuickMark:Print("    at, autotoggle     auto toggle the user interface depending on if you are in a party/raid")
-      QuickMark:Print("    s, show            shows the user interface")
-      QuickMark:Print("    h, hide            hides the user interface")
-      QuickMark:Print("    t, toggle          shows or hides the user interface depending on if it was hidden or shown respectively")
-      QuickMark:Print("    hor, horizontal    sets the layout to be horizontal")
-      QuickMark:Print("    vert, vertical     sets the layout to be vertical")
-      QuickMark:Print("    f, flip            inverts the layout")
-      QuickMark:Print("    l, lock            locks the user interface")
-      QuickMark:Print("    u, unlock          unlocks the user interface")
-      QuickMark:Print("    scale <percentage> scales the user interface to the input percentage.  The default scale is set to 100")
-   end
-end
-
 function QuickMark:LoadSettings()
    -- Set Position
    if self.db.char.point ~= nil then
@@ -194,9 +270,9 @@ function QuickMark:LoadSettings()
 
    -- Set Scale
    if self.db.char.scale then
-      QuickMark:SetScale(self.db.char.scale)
+      QuickMark:Scale(self.db.char.scale)
    else
-      QuickMark:SetScale(1.0)
+      QuickMark:Scale(1.0)
    end
 end
 
@@ -204,49 +280,31 @@ end
 -- INITIALIZATION FUNCTION
 --------------------------------------------------------------------------------
 function QuickMark:OnInitialize()
-   QuickMark:Print("Initializing settings")
+   if DEBUG then QuickMark:Print("Initializing settings") end
 
    self.db = LibStub("AceDB-3.0"):New("QuickMarkDB")
-   QuickMark:RegisterChatCommand("qm", "SlashProcessor")
-   QuickMark:RegisterChatCommand("quickmark", "SlashProcessor")
 
    -- XXX: This might have performance problems but it is safe in terms of data consistency.
    QM_FRAME.frame:SetScript("OnLeave", function()
-					point, relativeTo, relativePoint, xOfs, yOfs = QM_FRAME.frame:GetPoint()
-					if relativeTo == nil then
-					   self.db.char.point = point
-					   self.db.char.relativePoint = relativePoint
-					   self.db.char.xOfs = xOfs
-					   self.db.char.yOfs = yOfs
-					   if DEBUG then
-					      QuickMark:Print("Positioning at " .. point .. " at "  .. xOfs .. ", " .. yOfs .. " relative to " .. relativePoint)
-					   end
-					end
-				     end)
+                                        point, relativeTo, relativePoint, xOfs, yOfs = QM_FRAME.frame:GetPoint()
+                                        if relativeTo == nil then
+                                           self.db.char.point = point
+                                           self.db.char.relativePoint = relativePoint
+                                           self.db.char.xOfs = xOfs
+                                           self.db.char.yOfs = yOfs
+                                           if DEBUG then
+                                              QuickMark:Print("Positioning at " .. point .. " at "  .. xOfs .. ", " .. yOfs .. " relative to " .. relativePoint)
+                                           end
+                                        end
+                                     end)
 
    QuickMark:LoadSettings()
 end
 
 function QuickMark:OnEnable()
-   QuickMark:Print("Enabled")
+   if DEBUG then QuickMark:Print("Enabled") end
 end
 
 function QuickMark:OnDisable()
-   QuickMark:Print("Disabled")
+   if DEBUG then QuickMark:Print("Disabled") end
 end
-
-
-local frame = CreateFrame("Frame")
-
-function frame:OnUpdate()
-if AutoToggle == true then
-	numMembers = GetRealNumPartyMembers()
-	if numMembers > 0 then
-			QM_FRAME:Show()
-			else
-			QM_FRAME:Hide()
-		end
-	end
-end
-frame:SetScript("OnUpdate", frame.OnUpdate)
-
