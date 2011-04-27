@@ -61,7 +61,6 @@ function QuickMark:CreateQuickMarkFrame()
    local qmFrame = AceGUI:Create("QuickMarkFrame")
 
    for i=1, 8 do
-      QuickMark:Print(i)
       local targetIcon = AceGUI:Create("Icon")
       targetIcon:SetImage("INTERFACE/TARGETINGFRAME/UI-RaidTargetingIcon_" .. i)
       targetIcon:SetWidth(20)
@@ -82,7 +81,7 @@ function QuickMark:CreateQuickMarkFrame()
 end
 
 local QM_FRAME = QuickMark:CreateQuickMarkFrame()
-local DEBUG = true
+local DEBUG = false
 
 --------------------------------------------------------------------------------
 -- Layout
