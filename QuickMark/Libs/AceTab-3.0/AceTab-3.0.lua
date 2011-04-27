@@ -2,12 +2,14 @@
 -- Note: This library is not yet finalized.
 -- @class file
 -- @name AceTab-3.0
--- @release $Id: AceTab-3.0.lua 905 2009-12-15 16:48:32Z nevcairiel $
+-- @release $Id: AceTab-3.0.lua 947 2010-06-29 16:44:48Z nevcairiel $
 
-local ACETAB_MAJOR, ACETAB_MINOR = 'AceTab-3.0', 5
+local ACETAB_MAJOR, ACETAB_MINOR = 'AceTab-3.0', 8
 local AceTab, oldminor = LibStub:NewLibrary(ACETAB_MAJOR, ACETAB_MINOR)
 
 if not AceTab then return end -- No upgrade needed
+
+local is335 = GetBuildInfo() >= "3.3.5"
 
 AceTab.registry = AceTab.registry or {}
 
@@ -36,11 +38,11 @@ end
 local function hookFrame(f)
 	if f.hookedByAceTab3 then return end
 	f.hookedByAceTab3 = true
-	if f == ChatFrameEditBox then
+	if f == (is335 and ChatEdit_GetActiveWindow() or ChatFrameEditBox) then
 		local origCTP = ChatEdit_CustomTabPressed
-		function ChatEdit_CustomTabPressed()
+		function ChatEdit_CustomTabPressed(...)
 			if AceTab:OnTabPressed(f) then
-				return origCTP()
+				return origCTP(...)
 			else
 				return true
 			end
@@ -50,9 +52,9 @@ local function hookFrame(f)
 		if type(origOTP) ~= 'function' then
 			origOTP = function() end
 		end
-		f:SetScript('OnTabPressed', function()
+		f:SetScript('OnTabPressed', function(...)
 			if AceTab:OnTabPressed(f) then
-				return origOTP()
+				return origOTP(...)
 			end
 		end)
 	end
@@ -117,7 +119,14 @@ function AceTab:RegisterTabCompletion(descriptor, prematches, wordlist, usagefun
 
 	-- Make listenframes into a one-element table if it was not passed a table of frames.
 	if not listenframes then  -- default
-		listenframes = { ChatFrameEditBox }
+		if is335 then
+			listenframes = {}
+			for i = 1, NUM_CHAT_WINDOWS do
+				listenframes[i] = _G["ChatFrame"..i.."EditBox"]
+			end
+		else
+			listenframes = { ChatFrameEditBox }
+		end
 	elseif type(listenframes) ~= 'table' or type(listenframes[0]) == 'userdata' and type(listenframes.IsObjectType) == 'function' then  -- single frame or framename
 		listenframes = { listenframes }
 	end
@@ -311,7 +320,7 @@ function AceTab:OnTabPressed(this)
 	if this:GetText() == '' then return true end
 
 	-- allow Blizzard to handle slash commands, themselves
-	if this == ChatFrameEditBox then
+	if this == (is335 and ChatEdit_GetActiveWindow() or ChatFrameEditBox) then
 		local command = this:GetText()
 		if strfind(command, "^/[%a%d_]+$") then
 			return true
