@@ -54,10 +54,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 -- QUICKMARK FRAME CREATION FUNCTION
 --------------------------------------------------------------------------------
 function QuickMark:CreateQuickMarkFrame()
-   --local frame = AceGUI:Create("QuickMarkFrame")
---frame:SetTitle("Example Frame")
---frame:SetStatusText("AceGUI-3.0 Example Container Frame")
-
    local qmFrame = AceGUI:Create("QuickMarkFrame")
 
    for i=1, 8 do
@@ -74,7 +70,6 @@ function QuickMark:CreateQuickMarkFrame()
                                            end
                                         end)
       qmFrame:AddChild(targetIcon)
-      --frame:AddChild(targetIcon)
    end
 
    return qmFrame

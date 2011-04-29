@@ -83,7 +83,7 @@ Methods
 local methods = {
         ["OnAcquire"] = function(self)
                 self.frame:SetParent(UIParent)
-                self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+                self.frame:SetFrameStrata("MEDIUM")
                 self:SetTitle()
                 self:SetStatusText()
                 self:ApplyStatus()
