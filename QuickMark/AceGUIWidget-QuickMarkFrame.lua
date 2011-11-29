@@ -140,6 +140,18 @@ local methods = {
                 self.frame:SetMovable(true)
         end,
 
+        ["SetBackdrop"] = function(self, edge_file, r, g, b, a)
+           local backdrop = {
+              bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+              edgeFile = edge_file,--"Interface\\Tooltips\\UI-Tooltip-Border",
+              tile = true, tileSize = 16, edgeSize = 16,
+              insets = { left = 3, right = 3, top = 5, bottom = 3 }
+           }
+
+           self.frame:SetBackdrop(backdrop)
+           self.frame:SetBackdropColor(r, g, b, a)
+        end,
+
         -- called to set an external table to store status in
         ["SetStatusTable"] = function(self, status)
                 assert(type(status) == "table")
@@ -166,8 +178,8 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local FrameBackdrop = {
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        --bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+--        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
         tile = true, tileSize = 32, edgeSize = 32,
         insets = { left = 8, right = 8, top = 8, bottom = 8 }
 }

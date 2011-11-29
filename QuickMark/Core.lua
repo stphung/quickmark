@@ -3,46 +3,77 @@ local QuickMark = LibStub("AceAddon-3.0"):NewAddon("QuickMark", "AceConsole-3.0"
 --------------------------------------------------------------------------------
 -- Options
 --------------------------------------------------------------------------------
+local borders = {
+   ["Interface\\DialogFrame\\UI-DialogBox-Border"] = "Classic",
+   ["Interface\\DialogFrame\\UI-DialogBox-Gold-Border"] = "Classic Gold",
+   ["Interface\\Tooltips\\UI-Tooltip-Border"] = "Slick",
+   ["Interface\\ACHIEVEMENTFRAME\\UI-Achievement-WoodBorder"] = "Wood",
+   ["Interface\\FriendsFrame\\UI-Toast-Border"] = "Hefty",
+   ["None"] = "None",
+   ["Interface\\LFGFRAME\\LFGBorder"] = "Graphite"
+}
+
+local backgrounds = {
+   ["Interface\\ChatFrame\\ChatFrameBackground"] = "ChatFrameBackground",
+   ["Interface\\DialogFrame\\UI-DialogBox-Background"] = "DialogBoxBackground"
+}
+
 local options = {
     name = "QuickMark",
     handler = QuickMark,
     type = 'group',
     args = {
        -- Locking
-       lockGui = {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'ToggleLocked', get = 'IsLocked', cmdHidden = true},
+       lock_gui = {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'ToggleLocked', get = 'IsLocked', cmdHidden = true, order = 1},
        lock =    {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked',    get = 'IsLocked', guiHidden = true},
        l =       {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked',    get = 'IsLocked', guiHidden = true},
-       unlock =  {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
-       u =       {type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
-
-       -- Flip
-       flip = {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
-       f =    {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
-
-       -- Horizontal
-       horizontalGui = {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'Flip',          get = 'GetHorizontal', cmdHidden = true},
-       horizontal =    {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true },
-       hor =           {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true},
-
-       -- Vertical
-       vertical = {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
-       vert =     {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
+       unlock =  {type = 'toggle', name = 'Lock', desc = 'Unlock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
+       u =       {type = 'toggle', name = 'Lock', desc = 'Unlock the QuickMark bar.', set = 'SetUnlocked',  get = 'IsLocked', guiHidden = true},
 
        -- Hide
-       hideGui = {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', cmdHidden = true},
-       hide =    {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
-       h =       {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
+       hide_gui = {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', cmdHidden = true, order = 2},
+       hide =    {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
+       h =       {type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'SetHidden',    get = 'IsHidden', guiHidden = true},
 
        -- Show
-       show = {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar', set = 'SetShown', get = 'IsShown', guiHidden = true},
-       s =    {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar', set = 'SetShown', get = 'IsShown', guiHidden = true},
+       show = {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true},
+       s =    {type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true},
+
+       -------------------------------------------------------------------------
+       -- APPEARANCE
+       -------------------------------------------------------------------------
+       appearance_header = {type = 'header', name = 'Appearance', order = 10},
+
+       -- Border
+       border = {type = 'select', name = 'Border', desc = 'Set the border of the QuickMark bar.', style = 'dropdown', set = 'SetBorder', get = 'GetBorder', values = borders, cmdHidden = true, order = 12},
+
+       -- Background color
+       background_color = {type = 'color', name = 'Background Color', desc = 'Set the color of the background of the QuickMark bar.', get = 'GetBackgroundColor', set = 'SetBackgroundColor', hasAlpha = true, cmdHidden = true, order = 11},
+
+       -------------------------------------------------------------------------
+       -- APPEARANCE
+       -------------------------------------------------------------------------
+       size_and_orientation_header = {type='header', name = 'Size and Orientation', order = 20},
+
+       -- Flip
+       flip = {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation.', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
+       f =    {type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation.', set = 'Flip', get = 'GetHorizontal', guiHidden = true},
+
+       -- Horizontal
+       horizontal_gui = {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'Flip',          get = 'GetHorizontal', cmdHidden = true},
+       horizontal =    {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true },
+       hor =           {type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true},
+
+       -- Vertical
+       vertical = {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically.', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
+       vert =     {type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically.', set = 'SetVertical', get = 'GetVertical', guiHidden = true},
 
        -- Toggle
-       toggle = {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
-       t =      {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
+       toggle = {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
+       t =      {type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true},
 
        -- Scale
-       scale = {type = 'range', name = 'Scale', desc = 'Scale controls the size of the QuickMark bar.', set = 'SetScale', get = 'GetScale', min = 0.1, max = 5.0, cmdHidden = true}
+       scale = {type = 'range', name = 'Scale', desc = 'Scale controls the size of the QuickMark bar.', set = 'SetScale', get = 'GetScale', min = 0.1, max = 5.0, cmdHidden = true},
     },
 }
 
@@ -62,7 +93,7 @@ function QuickMark:CreateQuickMarkFrame()
       targetIcon:SetWidth(20)
       targetIcon:SetHeight(20)
       targetIcon:SetImageSize(20,20)
-      targetIcon:SetCallback("OnClick", function()
+      targetIcon:SetCallback("OnClick", function(self, button)
                                            if GetRaidTargetIndex("target") ~= i then
                                               SetRaidTarget("target", i)
                                            else
@@ -233,6 +264,40 @@ function QuickMark:ToggleHidden(info, input)
    end
 end
 
+--------------------------------------------------------------------------------
+-- Appearance
+--------------------------------------------------------------------------------
+function QuickMark:Border(edge_file)
+   self.db.char.edge_file = edge_file
+   QM_FRAME:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+   if DEBUG then QuickMark:Print("Border changed") end
+end
+
+function QuickMark:GetBorder(info, input)
+   return self.db.char.edge_file
+end
+
+function QuickMark:SetBorder(info, input)
+   QuickMark:Border(input)
+end
+
+function QuickMark:BackgroundColor(r, g, b, a)
+   self.db.char.bg_color_r = r
+   self.db.char.bg_color_g = g
+   self.db.char.bg_color_b = b
+   self.db.char.bg_color_a = a
+   QM_FRAME:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+   if DEBUG then QuickMark:Print("Color changed") end
+end
+
+function QuickMark:GetBackgroundColor(info, r, g, b, a)
+   return self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a
+end
+
+function QuickMark:SetBackgroundColor(info, r, g, b, a)
+   QuickMark:BackgroundColor(r,g,b,a)
+end
+
 -- DEPRECATED: Only here for those using the 2.0 API, use QuickMark:Toggle() instead.
 function QuickMark_ToggleForm()
    QuickMark:Toggle()
@@ -274,6 +339,20 @@ function QuickMark:LoadSettings()
    else
       QuickMark:Scale(1.0)
    end
+
+   -- Set Border
+   if self.db.char.edge_file then
+      QuickMark:Border(self.db.char.edge_file)
+   else
+      QuickMark:Border("Interface\\Tooltips\\UI-Tooltip-Border")
+   end
+
+   if self.db.char.bg_color_r and self.db.char.bg_color_g and self.db.char.bg_color_b and self.db.char.bg_color_a then
+      QuickMark:BackgroundColor(self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+   else
+      QuickMark:BackgroundColor(0,0,0,0.3)
+   end
+
 end
 
 --------------------------------------------------------------------------------
