@@ -9,7 +9,7 @@ local borders = {
    ["Interface\\Tooltips\\UI-Tooltip-Border"] = "Slick",
    ["Interface\\ACHIEVEMENTFRAME\\UI-Achievement-WoodBorder"] = "Wood",
    ["Interface\\FriendsFrame\\UI-Toast-Border"] = "Hefty",
-   ["None"] = "None",
+   [""] = "None",
    ["Interface\\LFGFRAME\\LFGBorder"] = "Graphite"
 }
 
