@@ -8,6 +8,10 @@
 ## X-Curse-Project-Name: QuickMark
 ## X-Curse-Project-ID: quick-mark
 ## X-Curse-Repository-ID: wow/quick-mark/mainline
+## X-Curse-Packaged-Version: r20141101233746
+## X-Curse-Project-Name: QuickMark
+## X-Curse-Project-ID: quick-mark
+## X-Curse-Repository-ID: wow/quick-mark/mainline
 
-AceGUIWidget-QuickMarkFrame.lua
+widgets/AceGUIWidget-QuickMarkFrame.lua
 QuickMark.lua
