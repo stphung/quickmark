@@ -4,7 +4,10 @@
 ## Author: stphung
 ## Version: 3.141592653589793
 ## SavedVariables: QuickMarkDB
+## X-Curse-Packaged-Version: r20141101225033
+## X-Curse-Project-Name: QuickMark
+## X-Curse-Project-ID: quick-mark
+## X-Curse-Repository-ID: wow/quick-mark/mainline
 
-embeds.xml
 AceGUIWidget-QuickMarkFrame.lua
-Core.lua
+QuickMark.lua
