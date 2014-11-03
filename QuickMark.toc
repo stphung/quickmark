@@ -13,5 +13,6 @@
 ## X-Curse-Project-ID: quick-mark
 ## X-Curse-Repository-ID: wow/quick-mark/mainline
 
+lib/libdatabroker-1-1/LibDataBroker-1.1.lua
 widgets/AceGUIWidget-QuickMarkFrame.lua
 QuickMark.lua
