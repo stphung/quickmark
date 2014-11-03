@@ -2,16 +2,8 @@
 ## Title: QuickMark
 ## Notes: QuickMark allows you to set the raid target icon of units quickly rather than having to go through the right-click menu or create keybindings.
 ## Author: stphung
-## Version: 3.141592653589793
+## Version: 60000
 ## SavedVariables: QuickMarkDB
-## X-Curse-Packaged-Version: r20141101225033
-## X-Curse-Project-Name: QuickMark
-## X-Curse-Project-ID: quick-mark
-## X-Curse-Repository-ID: wow/quick-mark/mainline
-## X-Curse-Packaged-Version: r20141101233746
-## X-Curse-Project-Name: QuickMark
-## X-Curse-Project-ID: quick-mark
-## X-Curse-Repository-ID: wow/quick-mark/mainline
 
 lib/libdatabroker-1-1/LibDataBroker-1.1.lua
 widgets/AceGUIWidget-QuickMarkFrame.lua
