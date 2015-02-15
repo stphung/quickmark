@@ -5,6 +5,11 @@
 ## Version: 60000
 ## SavedVariables: QuickMarkDB
 
-lib/libdatabroker-1-1/LibDataBroker-1.1.lua
+libs/LibStub/LibStub.lua
+libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
+libs/libdatabroker-1-1/LibDataBroker-1.1.lua
+
+embeds.xml
+
 widgets/AceGUIWidget-QuickMarkFrame.lua
 QuickMark.lua
