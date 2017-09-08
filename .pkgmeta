@@ -6,3 +6,5 @@ externals:
 enable-nolib-creation: no
 tools-used:
   - libdatabroker-1-1
+ignore:
+  - libs/tests
