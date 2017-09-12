@@ -362,28 +362,6 @@ function QuickMark:OnInitialize()
 
     self.db = LibStub("AceDB-3.0"):New("QuickMarkDB")
 
-    -- ldb support
-    local ldb = LibStub("LibDataBroker-1.1", true)
-    if ldb then
-        ldb:NewDataObject("QuickMark", {
-            type = "launcher",
-            label = "QuickMark",
-            icon = "INTERFACE/TARGETINGFRAME/UI-RaidTargetingIcon_8",
-            OnClick = function(self, Button)
-                if Button == "LeftButton" or Button == "RightButton" then
-                    QuickMark:Toggle()
-                end
-            end,
-            OnTooltipShow = function(Tip)
-                if not Tip or not Tip.AddLine then
-                    return
-                end
-                Tip:AddLine("QuickMark")
-                Tip:AddLine("Click to toggle display of the QuickMark bar", 1, 1, 1)
-            end
-        })
-    end
-
     -- XXX: This might have performance problems but it is safe in terms of data consistency.
     QM_FRAME.frame:SetScript("OnLeave", function()
         point, relativeTo, relativePoint, xOfs, yOfs = QM_FRAME.frame:GetPoint()
