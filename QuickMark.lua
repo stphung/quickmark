@@ -39,6 +39,11 @@ local options = {
         show = { type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true },
         s = { type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true },
 
+        --  Target Toggle Option Test
+        onTarget_gui = { type = 'toggle', name = 'Only Show With Target', desc ='Hide the QuickMark bar when you do not have a target.', set ='ToggleTarget', get = 'IsTarget', cmdHidden = true, order = 3},
+        target = { type = 'toggle', name ='Only Show With Target', set = 'Target', get ='IsTarget', guiHidden = true},
+        notarget = {type = 'toggle', name = 'Show Regardless of Target', set = 'NoTarget', get ='IsTarget', guiHidden = true},
+
         -------------------------------------------------------------------------
         -- APPEARANCE
         -------------------------------------------------------------------------
@@ -87,7 +92,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 function QuickMark:CreateQuickMarkFrame()
     local qmFrame = AceGUI:Create("QuickMarkFrame")
 
-    for i = 1, 8 do
+    for i = 8, 1, -1 do  --I reversed the order of the icons (maybe an option for it?)
         local targetIcon = AceGUI:Create("Icon")
         targetIcon:SetImage("INTERFACE/TARGETINGFRAME/UI-RaidTargetingIcon_" .. i)
         targetIcon:SetWidth(20)
@@ -102,18 +107,51 @@ function QuickMark:CreateQuickMarkFrame()
         end)
         qmFrame:AddChild(targetIcon)
     end
-
+-----------Create the clear all button------------
+--Clears all targets by setting the players icon to each marker, thus clearing it from it current target
+--------------------------------------------------
+    local targetIcon = AceGUI:Create("Icon")
+    targetIcon:SetImage("Interface/Addons/quickmark/media/cancel-mark.tga")
+    targetIcon:SetWidth(20)
+    targetIcon:SetHeight(20)
+    targetIcon:SetImageSize(20, 20)
+    targetIcon:SetCallback("OnClick", function(self, button)
+        for i = 1, 9 do
+            SetRaidTarget("player", i)
+        end
+    end)
+    qmFrame:AddChild(targetIcon)
+------------End the clear all button------------------
     return qmFrame
 end
 
 local QM_FRAME = QuickMark:CreateQuickMarkFrame()
 local DEBUG = false
 
+--------Show/Hide on Target-----------
+---This is the code that makes the show/hide on target work, not really sure what the logical place to put it is
+
+local eventFrame = CreateFrame("FRAME", "eventFrame")  --Make an empty frame for the event
+eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")  --Fire when the player changes targets
+local function eventHandler(self, event, ...)  --What do when the event fires
+    if QuickMark.db.char.target then  --Check for our toggle variable if so continue (not the QuickMark not self, this is a different frame)
+        if UnitExists("target") then  --If the player has a target show the bar
+            QuickMark:Show()
+        else                          --If not then hide the bar
+            QuickMark:Hide()
+        end
+    end
+
+end
+eventFrame:SetScript("OnEvent", eventHandler)  --Linking the function to the event
+--]]
+------End Show/Hide on Target------------
+
 --------------------------------------------------------------------------------
 -- Layout
 --------------------------------------------------------------------------------
 function QuickMark:SetHorizontalLayout()
-    QM_FRAME:SetWidth(195)
+    QM_FRAME:SetWidth(215)  --Had to make this bigger to fix the extra button (side note this could be made smaller to make multiple rows, maybe a nice place for an option)
     QM_FRAME:SetHeight(48)
     QM_FRAME:SetLayout("Flow")
     self.db.char.horizontal = true
@@ -123,7 +161,7 @@ end
 
 function QuickMark:SetVerticalLayout()
     QM_FRAME:SetWidth(45)
-    QM_FRAME:SetHeight(260)
+    QM_FRAME:SetHeight(280)  --Had to adjust this just like above
     QM_FRAME:SetLayout("List")
     QuickMark.db.char.horizontal = false
     if DEBUG then QuickMark:Print("Vertical Layout") end
@@ -264,6 +302,36 @@ function QuickMark:ToggleHidden(info, input)
     end
 end
 
+-----Test functions for Target options------
+function QuickMark:Target(info, input)
+    self.db.char.target = true    
+    if UnitExists("target") then  --Check if you have a target when setting the option and set the bar accordingly (the event only updates when target is changed so we need to check for it initially)
+        QuickMark:Show()
+    else
+        QuickMark:Hide()
+    end
+end
+
+function QuickMark:NoTarget(info, input)
+    self.db.char.target = false
+    QuickMark:Show()  --When turning off force the bar to show
+end
+
+function QuickMark:ToggleTarget(info, input)
+    self.db.char.target = not self.db.char.target
+    if self.db.char.target then
+        QuickMark:Target()
+    else
+        QuickMark:NoTarget()
+    end
+end
+
+function QuickMark:IsTarget(info)
+    return self.db.char.target
+end
+-----End test functions---------------------
+
+
 --------------------------------------------------------------------------------
 -- Appearance
 --------------------------------------------------------------------------------
@@ -331,6 +399,13 @@ function QuickMark:LoadSettings()
         QuickMark:Hide()
     else
         QuickMark:Show()
+    end
+
+    -- Set Target Status
+    if self.db.char.target then
+        QuickMark:Target()
+    else
+        QuickMark:NoTarget()
     end
 
     -- Set Scale
