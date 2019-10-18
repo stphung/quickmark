@@ -151,7 +151,7 @@ eventFrame:SetScript("OnEvent", eventHandler)  --Linking the function to the eve
 -- Layout
 --------------------------------------------------------------------------------
 function QuickMark:SetHorizontalLayout()
-    QM_FRAME:SetWidth(215)  --Had to make this bigger to fix the extra button (side note this could be made smaller to make multiple rows, maybe a nice place for an option)
+    QM_FRAME:SetWidth(215)  --Had to make this bigger to fit the extra button (side note this could be made smaller to make multiple rows, maybe a nice place for an option)
     QM_FRAME:SetHeight(48)
     QM_FRAME:SetLayout("Flow")
     self.db.char.horizontal = true
