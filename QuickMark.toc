@@ -1,13 +1,11 @@
-## Interface: 70000
+## Interface: 80205
 ## Title: QuickMark
 ## Notes: QuickMark allows you to set the raid target icon of units quickly rather than having to go through the right-click menu or create keybindings.
 ## Author: stphung
-## Version: 60100
 ## SavedVariables: QuickMarkDB
 
 libs/LibStub/LibStub.lua
 libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
-libs/libdatabroker-1-1/LibDataBroker-1.1.lua
 
 embeds.xml
 
