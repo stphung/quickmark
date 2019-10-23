@@ -144,8 +144,18 @@ local function eventHandler(self, event, ...)  --What do when the event fires
 
 end
 eventFrame:SetScript("OnEvent", eventHandler)  --Linking the function to the event
---]]
 ------End Show/Hide on Target------------
+
+------If in target mode, hide on world load---------
+------If you have a target when hearthing/instancing/etc the bar will stay until you select then deselect another target, this prevents that
+local worldLoadFrame = CreateFrame("FRAME", "worldLoadFrame")
+worldLoadFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+local function worldLoadHandler(self, event, ...)
+    if QuickMark.db.char.target then
+        QuickMark:Hide()
+    end
+end
+worldLoadFrame:SetScript("onEvent",worldLoadHandler)
 
 --------------------------------------------------------------------------------
 -- Layout
