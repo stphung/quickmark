@@ -1,9 +1,15 @@
 local QuickMark = LibStub("AceAddon-3.0"):NewAddon("QuickMark", "AceConsole-3.0")
+local AceGUI = LibStub("AceGUI-3.0")
+local AceDB = LibStub("AceDB-3.0")
+local AceConfigDialogue = LibStub("AceConfigDialog-3.0")
+local AceConfig = LibStub("AceConfig-3.0")
+
+local DEBUG = false
 
 --------------------------------------------------------------------------------
 -- Options
 --------------------------------------------------------------------------------
-local borders = {
+local EDGE_FILES = {
     ["Interface\\DialogFrame\\UI-DialogBox-Border"] = "Classic",
     ["Interface\\DialogFrame\\UI-DialogBox-Gold-Border"] = "Classic Gold",
     ["Interface\\Tooltips\\UI-Tooltip-Border"] = "Slick",
@@ -13,12 +19,7 @@ local borders = {
     ["Interface\\LFGFRAME\\LFGBorder"] = "Graphite"
 }
 
-local backgrounds = {
-    ["Interface\\ChatFrame\\ChatFrameBackground"] = "ChatFrameBackground",
-    ["Interface\\DialogFrame\\UI-DialogBox-Background"] = "DialogBoxBackground"
-}
-
-local options = {
+local OPTIONS = {
     name = "QuickMark",
     handler = QuickMark,
     type = 'group',
@@ -45,7 +46,7 @@ local options = {
         appearance_header = { type = 'header', name = 'Appearance', order = 10 },
 
         -- Border
-        border = { type = 'select', name = 'Border', desc = 'Set the border of the QuickMark bar.', style = 'dropdown', set = 'SetBorder', get = 'GetBorder', values = borders, cmdHidden = true, order = 12 },
+        border = { type = 'select', name = 'Border', desc = 'Set the border of the QuickMark bar.', style = 'dropdown', set = 'SetBorder', get = 'GetBorder', values = EDGE_FILES, cmdHidden = true, order = 12 },
 
         -- Background color
         background_color = { type = 'color', name = 'Background Color', desc = 'Set the color of the background of the QuickMark bar.', get = 'GetBackgroundColor', set = 'SetBackgroundColor', hasAlpha = true, cmdHidden = true, order = 11 },
@@ -77,22 +78,19 @@ local options = {
     },
 }
 
-LibStub("AceConfigDialog-3.0"):AddToBlizOptions("QuickMark", "QuickMark")
-LibStub("AceConfig-3.0"):RegisterOptionsTable("QuickMark", options, { "quickmark", "qm" })
-local AceGUI = LibStub("AceGUI-3.0")
-
 --------------------------------------------------------------------------------
--- QUICKMARK FRAME CREATION FUNCTION
+-- Frame
 --------------------------------------------------------------------------------
 function QuickMark:CreateQuickMarkFrame()
-    local qmFrame = AceGUI:Create("QuickMarkFrame")
+    local frame = AceGUI:Create("QuickMarkFrame")
+    local iconSize = 20
 
     for i = 1, 8 do
         local targetIcon = AceGUI:Create("Icon")
         targetIcon:SetImage("INTERFACE/TARGETINGFRAME/UI-RaidTargetingIcon_" .. i)
-        targetIcon:SetWidth(20)
-        targetIcon:SetHeight(20)
-        targetIcon:SetImageSize(20, 20)
+        targetIcon:SetWidth(iconSize)
+        targetIcon:SetHeight(iconSize)
+        targetIcon:SetImageSize(iconSize, iconSize)
         targetIcon:SetCallback("OnClick", function(self, button)
             if GetRaidTargetIndex("target") ~= i then
                 SetRaidTarget("target", i)
@@ -100,33 +98,34 @@ function QuickMark:CreateQuickMarkFrame()
                 SetRaidTarget("target", 0)
             end
         end)
-        qmFrame:AddChild(targetIcon)
+        frame:AddChild(targetIcon)
     end
 
-    return qmFrame
+    return frame
 end
 
-local QM_FRAME = QuickMark:CreateQuickMarkFrame()
-local DEBUG = false
+local frame = QuickMark:CreateQuickMarkFrame()
+AceConfigDialogue:AddToBlizOptions("QuickMark", "QuickMark")
+AceConfig:RegisterOptionsTable("QuickMark", OPTIONS, { "quickmark", "qm" })
 
 --------------------------------------------------------------------------------
--- Layout
+-- Layout Handlers
 --------------------------------------------------------------------------------
 function QuickMark:SetHorizontalLayout()
-    QM_FRAME:SetWidth(195)
-    QM_FRAME:SetHeight(48)
-    QM_FRAME:SetLayout("Flow")
+    frame:SetWidth(195)
+    frame:SetHeight(48)
+    frame:SetLayout("Flow")
     self.db.char.horizontal = true
-    if DEBUG then QuickMark:Print("Horizontal Layout") end
+    QuickMark:Debug("Horizontal Layout")
     return self.db.char.horizontal
 end
 
 function QuickMark:SetVerticalLayout()
-    QM_FRAME:SetWidth(45)
-    QM_FRAME:SetHeight(260)
-    QM_FRAME:SetLayout("List")
+    frame:SetWidth(45)
+    frame:SetHeight(260)
+    frame:SetLayout("List")
     QuickMark.db.char.horizontal = false
-    if DEBUG then QuickMark:Print("Vertical Layout") end
+    QuickMark:Debug("Vertical Layout")
     return self.db.char.horizontal
 end
 
@@ -155,18 +154,18 @@ function QuickMark:Flip(info, input)
 end
 
 --------------------------------------------------------------------------------
--- Locking
+-- Locking Handlers
 --------------------------------------------------------------------------------
 function QuickMark:Lock()
-    QM_FRAME:Lock()
+    frame:Lock()
     self.db.char.locked = true
-    if DEBUG then QuickMark:Print("Locked") end
+    QuickMark:Debug("Locked")
 end
 
 function QuickMark:Unlock()
-    QM_FRAME:Unlock()
+    frame:Unlock()
     self.db.char.locked = false
-    if DEBUG then QuickMark:Print("Unlocked") end
+    QuickMark:Debug("Unlocked")
 end
 
 function QuickMark:IsLocked(info)
@@ -190,23 +189,22 @@ function QuickMark:SetUnlocked(info, input)
 end
 
 --------------------------------------------------------------------------------
--- Positioning
+-- Positioning Handlers
 --------------------------------------------------------------------------------
 function QuickMark:SetPosition(point, relativePoint, x, y)
-    QM_FRAME:ClearAllPoints()
-    QM_FRAME:SetPoint(point, UIParent, relativePoint, x, y)
-    if DEBUG then
-        QuickMark:Print("Positioning at " .. x .. ", " .. y .. " relative to " .. relativePoint)
-    end
+    frame:ClearAllPoints()
+    frame:SetPoint(point, UIParent, relativePoint, x, y)
+    QuickMark:Debug("Positioning at " .. x .. ", " .. y .. " relative to " .. relativePoint)
 end
 
 --------------------------------------------------------------------------------
--- Scaling
+-- Scaling Handlers
 --------------------------------------------------------------------------------
 function QuickMark:Scale(scale)
-    QM_FRAME.frame:SetScale(scale)
+    frame.frame:SetScale(scale)
     self.db.char.scale = scale
-    if DEBUG then QuickMark:Print("Scale set to " .. scale * 100 .. "%") end
+    local displayScale = scale * 100
+    QuickMark:Debug("Scale set to " .. displayScale .. "%")
 end
 
 function QuickMark:GetScale(info)
@@ -218,7 +216,7 @@ function QuickMark:SetScale(info, scale)
 end
 
 --------------------------------------------------------------------------------
--- Displaying
+-- Displaying Handlers
 --------------------------------------------------------------------------------
 function QuickMark:Toggle()
     if self.db.char.hidden then
@@ -229,15 +227,15 @@ function QuickMark:Toggle()
 end
 
 function QuickMark:Show()
-    QM_FRAME:Show()
+    frame:Show()
     self.db.char.hidden = false
-    if DEBUG then QuickMark:Print("Shown") end
+    QuickMark:Debug("Shown")
 end
 
 function QuickMark:Hide()
-    QM_FRAME:Hide()
+    frame:Hide()
     self.db.char.hidden = true
-    if DEBUG then QuickMark:Print("Hidden") end
+    QuickMark:Debug("Hidden")
 end
 
 function QuickMark:IsShown(info)
@@ -265,12 +263,12 @@ function QuickMark:ToggleHidden(info, input)
 end
 
 --------------------------------------------------------------------------------
--- Appearance
+-- Appearance Handlers
 --------------------------------------------------------------------------------
 function QuickMark:Border(edge_file)
     self.db.char.edge_file = edge_file
-    QM_FRAME:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
-    if DEBUG then QuickMark:Print("Border changed") end
+    frame:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+    QuickMark:Debug("Border changed")
 end
 
 function QuickMark:GetBorder(info, input)
@@ -286,8 +284,8 @@ function QuickMark:BackgroundColor(r, g, b, a)
     self.db.char.bg_color_g = g
     self.db.char.bg_color_b = b
     self.db.char.bg_color_a = a
-    QM_FRAME:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
-    if DEBUG then QuickMark:Print("Color changed") end
+    frame:SetBackdrop(self.db.char.edge_file, self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+    QuickMark:Debug("Color changed")
 end
 
 function QuickMark:GetBackgroundColor(info, r, g, b, a)
@@ -304,8 +302,15 @@ function QuickMark_ToggleForm()
 end
 
 --------------------------------------------------------------------------------
--- Load Settings
+-- Initialization
 --------------------------------------------------------------------------------
+local DEFAULT_EDGE_FILE = "Interface\\Tooltips\\UI-Tooltip-Border"
+local DEFAULT_SCALE = 1.0
+local DEFAULT_R = 0
+local DEFAULT_G = 0
+local DEFAULT_B = 0
+local DEFAULT_A = 0.3
+
 function QuickMark:LoadSettings()
     -- Set Position
     if self.db.char.point ~= nil then
@@ -337,42 +342,37 @@ function QuickMark:LoadSettings()
     if self.db.char.scale then
         QuickMark:Scale(self.db.char.scale)
     else
-        QuickMark:Scale(1.0)
+        QuickMark:Scale(DEFAULT_SCALE)
     end
 
     if self.db.char.bg_color_r and self.db.char.bg_color_g and self.db.char.bg_color_b and self.db.char.bg_color_a then
         QuickMark:BackgroundColor(self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
     else
-        QuickMark:BackgroundColor(0, 0, 0, 0.3)
+        QuickMark:BackgroundColor(DEFAULT_R, DEFAULT_G, DEFAULT_B, DEFAULT_A)
     end
 
     -- Set Border
     if self.db.char.edge_file then
         QuickMark:Border(self.db.char.edge_file)
     else
-        QuickMark:Border("Interface\\Tooltips\\UI-Tooltip-Border")
+        QuickMark:Border(DEFAULT_EDGE_FILE)
     end
 end
 
---------------------------------------------------------------------------------
--- INITIALIZATION FUNCTION
---------------------------------------------------------------------------------
 function QuickMark:OnInitialize()
-    if DEBUG then QuickMark:Print("Initializing settings") end
+    QuickMark:Debug("Initializing settings")
 
-    self.db = LibStub("AceDB-3.0"):New("QuickMarkDB")
+    self.db = AceDB:New("QuickMarkDB")
 
     -- XXX: This might have performance problems but it is safe in terms of data consistency.
-    QM_FRAME.frame:SetScript("OnLeave", function()
-        point, relativeTo, relativePoint, xOfs, yOfs = QM_FRAME.frame:GetPoint()
+    frame.frame:SetScript("OnLeave", function()
+        point, relativeTo, relativePoint, xOfs, yOfs = frame.frame:GetPoint()
         if relativeTo == nil then
             self.db.char.point = point
             self.db.char.relativePoint = relativePoint
             self.db.char.xOfs = xOfs
             self.db.char.yOfs = yOfs
-            if DEBUG then
-                QuickMark:Print("Positioning at " .. point .. " at " .. xOfs .. ", " .. yOfs .. " relative to " .. relativePoint)
-            end
+            QuickMark:Debug("Positioning at " .. point .. " at " .. xOfs .. ", " .. yOfs .. " relative to " .. relativePoint)
         end
     end)
 
@@ -380,9 +380,15 @@ function QuickMark:OnInitialize()
 end
 
 function QuickMark:OnEnable()
-    if DEBUG then QuickMark:Print("Enabled") end
+    QuickMark:Debug("Enabled")
 end
 
 function QuickMark:OnDisable()
-    if DEBUG then QuickMark:Print("Disabled") end
+    QuickMark:Debug("Disabled")
+end
+
+function QuickMark:Debug(message)
+    if DEBUG then
+        QuickMark:Print(message)
+    end
 end
