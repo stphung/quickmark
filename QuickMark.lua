@@ -340,17 +340,17 @@ function QuickMark:LoadSettings()
         QuickMark:Scale(1.0)
     end
 
+    if self.db.char.bg_color_r and self.db.char.bg_color_g and self.db.char.bg_color_b and self.db.char.bg_color_a then
+        QuickMark:BackgroundColor(self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
+    else
+        QuickMark:BackgroundColor(0, 0, 0, 0.3)
+    end
+
     -- Set Border
     if self.db.char.edge_file then
         QuickMark:Border(self.db.char.edge_file)
     else
         QuickMark:Border("Interface\\Tooltips\\UI-Tooltip-Border")
-    end
-
-    if self.db.char.bg_color_r and self.db.char.bg_color_g and self.db.char.bg_color_b and self.db.char.bg_color_a then
-        QuickMark:BackgroundColor(self.db.char.bg_color_r, self.db.char.bg_color_g, self.db.char.bg_color_b, self.db.char.bg_color_a)
-    else
-        QuickMark:BackgroundColor(0, 0, 0, 0.3)
     end
 end
 
