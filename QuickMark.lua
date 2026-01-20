@@ -105,7 +105,7 @@ function QuickMark:CreateQuickMarkFrame()
 end
 
 local frame = QuickMark:CreateQuickMarkFrame()
-AceConfigDialogue:AddToBlizOptions("QuickMark", "QuickMark")
+--AceConfigDialogue:AddToBlizOptions("QuickMark", "QuickMark")
 AceConfig:RegisterOptionsTable("QuickMark", OPTIONS, { "quickmark", "qm" })
 
 --------------------------------------------------------------------------------
