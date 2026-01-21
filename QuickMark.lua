@@ -131,7 +131,7 @@ function QuickMark:SetVerticalLayout()
     local iconSize = 20
     local spacing = 5
 
-    frame:SetSize(48, 195)
+    frame:SetSize(48, 230)
 
     for i = 1, 8 do
         frame.icons[i]:ClearAllPoints()
