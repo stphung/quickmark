@@ -1,0 +1,10 @@
+tag af8bb49935d55fd60458202cb5bb13d3c6b708e3 100207
+Author:	Steven Phung <stphung@gmail.com>
+Date:	Mon Jul 8 23:43:06 2024 -0700
+
+commit 25ae49ff8142991a10a71bfc5d28c24fd57b6373
+Author: Steven Phung <stphung@gmail.com>
+Date:   Mon Jul 8 23:42:03 2024 -0700
+
+    Update QuickMark.toc
+

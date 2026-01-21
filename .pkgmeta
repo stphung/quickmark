@@ -1,8 +1,0 @@
-package-as: QuickMark
-externals:
-  libs:
-    url: svn://svn.wowace.com/wow/ace3/mainline/trunk
-    tag: latest
-enable-nolib-creation: no
-ignore:
-  - libs/tests
