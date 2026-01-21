@@ -49,7 +49,7 @@ end
 --------------------------------------------------------------------------------
 local function CreateQuickMarkFrame()
     local f = CreateFrame("Frame", "QuickMarkFrame", UIParent, "BackdropTemplate")
-    f:SetSize(195, 48)
+    f:SetSize(230, 48)
     f:SetPoint("CENTER")
     f:EnableMouse(true)
     f:SetMovable(true)
@@ -116,7 +116,7 @@ function QuickMark:SetHorizontalLayout()
     local iconSize = 20
     local spacing = 5
 
-    frame:SetSize(195, 48)
+    frame:SetSize(230, 48)
 
     for i = 1, 8 do
         frame.icons[i]:ClearAllPoints()
