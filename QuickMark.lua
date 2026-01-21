@@ -1,13 +1,12 @@
 local QuickMark = LibStub("AceAddon-3.0"):NewAddon("QuickMark", "AceConsole-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceDB = LibStub("AceDB-3.0")
-local AceConfigDialogue = LibStub("AceConfigDialog-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
 
 local DEBUG = false
+local settingsCategory = nil
 
 --------------------------------------------------------------------------------
--- Options
+-- Options (for slash commands)
 --------------------------------------------------------------------------------
 local EDGE_FILES = {
     ["Interface\\DialogFrame\\UI-DialogBox-Border"] = "Classic",
@@ -19,63 +18,15 @@ local EDGE_FILES = {
     ["Interface\\LFGFRAME\\LFGBorder"] = "Graphite"
 }
 
-local OPTIONS = {
-    name = "QuickMark",
-    handler = QuickMark,
-    type = 'group',
-    args = {
-        -- Locking
-        lock_gui = { type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'ToggleLocked', get = 'IsLocked', cmdHidden = true, order = 1 },
-        lock = { type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked', get = 'IsLocked', guiHidden = true },
-        l = { type = 'toggle', name = 'Lock', desc = 'Lock the QuickMark bar.', set = 'SetLocked', get = 'IsLocked', guiHidden = true },
-        unlock = { type = 'toggle', name = 'Lock', desc = 'Unlock the QuickMark bar.', set = 'SetUnlocked', get = 'IsLocked', guiHidden = true },
-        u = { type = 'toggle', name = 'Lock', desc = 'Unlock the QuickMark bar.', set = 'SetUnlocked', get = 'IsLocked', guiHidden = true },
-
-        -- Hide
-        hide_gui = { type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', cmdHidden = true, order = 2 },
-        hide = { type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'SetHidden', get = 'IsHidden', guiHidden = true },
-        h = { type = 'toggle', name = 'Hide', desc = 'Hide the QuickMark bar.', set = 'SetHidden', get = 'IsHidden', guiHidden = true },
-
-        -- Show
-        show = { type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true },
-        s = { type = 'toggle', name = 'Show', desc = 'Show the QuickMark bar.', set = 'SetShown', get = 'IsShown', guiHidden = true },
-
-        -------------------------------------------------------------------------
-        -- APPEARANCE
-        -------------------------------------------------------------------------
-        appearance_header = { type = 'header', name = 'Appearance', order = 10 },
-
-        -- Border
-        border = { type = 'select', name = 'Border', desc = 'Set the border of the QuickMark bar.', style = 'dropdown', set = 'SetBorder', get = 'GetBorder', values = EDGE_FILES, cmdHidden = true, order = 12 },
-
-        -- Background color
-        background_color = { type = 'color', name = 'Background Color', desc = 'Set the color of the background of the QuickMark bar.', get = 'GetBackgroundColor', set = 'SetBackgroundColor', hasAlpha = true, cmdHidden = true, order = 11 },
-
-        -------------------------------------------------------------------------
-        -- APPEARANCE
-        -------------------------------------------------------------------------
-        size_and_orientation_header = { type = 'header', name = 'Size and Orientation', order = 20 },
-
-        -- Flip
-        flip = { type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation.', set = 'Flip', get = 'GetHorizontal', guiHidden = true },
-        f = { type = 'toggle', name = 'Flip', desc = 'Invert the QuickMark bar orientation.', set = 'Flip', get = 'GetHorizontal', guiHidden = true },
-
-        -- Horizontal
-        horizontal_gui = { type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'Flip', get = 'GetHorizontal', cmdHidden = true },
-        horizontal = { type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true },
-        hor = { type = 'toggle', name = 'Horizontal', desc = 'Display the QuickMark bar horizontally.', set = 'SetHorizontal', get = 'GetHorizontal', guiHidden = true },
-
-        -- Vertical
-        vertical = { type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically.', set = 'SetVertical', get = 'GetVertical', guiHidden = true },
-        vert = { type = 'toggle', name = 'Vertical', desc = 'Display the QuickMark bar vertically.', set = 'SetVertical', get = 'GetVertical', guiHidden = true },
-
-        -- Toggle
-        toggle = { type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true },
-        t = { type = 'toggle', name = 'Toggle', desc = 'Toggle the display of the QuickMark bar.', set = 'ToggleHidden', get = 'IsHidden', guiHidden = true },
-
-        -- Scale
-        scale = { type = 'range', name = 'Scale', desc = 'Scale controls the size of the QuickMark bar.', set = 'SetScale', get = 'GetScale', min = 0.1, max = 5.0, cmdHidden = true },
-    },
+-- Border options for dropdown (value -> display name)
+local BORDER_OPTIONS = {
+    { value = "Interface\\DialogFrame\\UI-DialogBox-Border", label = "Classic" },
+    { value = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border", label = "Classic Gold" },
+    { value = "Interface\\Tooltips\\UI-Tooltip-Border", label = "Slick" },
+    { value = "Interface\\ACHIEVEMENTFRAME\\UI-Achievement-WoodBorder", label = "Wood" },
+    { value = "Interface\\FriendsFrame\\UI-Toast-Border", label = "Hefty" },
+    { value = "", label = "None" },
+    { value = "Interface\\LFGFRAME\\LFGBorder", label = "Graphite" },
 }
 
 --------------------------------------------------------------------------------
@@ -105,8 +56,36 @@ function QuickMark:CreateQuickMarkFrame()
 end
 
 local frame = QuickMark:CreateQuickMarkFrame()
---AceConfigDialogue:AddToBlizOptions("QuickMark", "QuickMark")
-AceConfig:RegisterOptionsTable("QuickMark", OPTIONS, { "quickmark", "qm" })
+
+--------------------------------------------------------------------------------
+-- Slash Commands
+--------------------------------------------------------------------------------
+SLASH_QUICKMARK1 = "/quickmark"
+SLASH_QUICKMARK2 = "/qm"
+SlashCmdList["QUICKMARK"] = function(msg)
+    local cmd = string.lower(msg or "")
+    if cmd == "lock" or cmd == "l" then
+        QuickMark:Lock()
+    elseif cmd == "unlock" or cmd == "u" then
+        QuickMark:Unlock()
+    elseif cmd == "hide" or cmd == "h" then
+        QuickMark:Hide()
+    elseif cmd == "show" or cmd == "s" then
+        QuickMark:Show()
+    elseif cmd == "toggle" or cmd == "t" then
+        QuickMark:Toggle()
+    elseif cmd == "flip" or cmd == "f" then
+        QuickMark:Flip()
+    elseif cmd == "horizontal" or cmd == "hor" then
+        QuickMark:SetHorizontalLayout()
+    elseif cmd == "vertical" or cmd == "vert" then
+        QuickMark:SetVerticalLayout()
+    else
+        if settingsCategory then
+            Settings.OpenToCategory(settingsCategory:GetID())
+        end
+    end
+end
 
 --------------------------------------------------------------------------------
 -- Layout Handlers
@@ -302,6 +281,114 @@ function QuickMark_ToggleForm()
 end
 
 --------------------------------------------------------------------------------
+-- Blizzard Settings API
+--------------------------------------------------------------------------------
+function QuickMark:SetupSettings()
+    local category = Settings.RegisterVerticalLayoutCategory("QuickMark")
+    settingsCategory = category
+
+    -- Lock checkbox
+    do
+        local variable = "QuickMark_Lock"
+        local name = "Lock"
+        local tooltip = "Lock the QuickMark bar in place."
+        local defaultValue = false
+
+        local setting = Settings.RegisterAddOnSetting(category, variable, variable, QuickMark.db.char, type(defaultValue), name, defaultValue)
+        setting:SetValueChangedCallback(function(_, value)
+            if value then
+                QuickMark:Lock()
+            else
+                QuickMark:Unlock()
+            end
+        end)
+        Settings.CreateCheckbox(category, setting, tooltip)
+    end
+
+    -- Hide checkbox
+    do
+        local variable = "QuickMark_Hide"
+        local name = "Hide"
+        local tooltip = "Hide the QuickMark bar."
+        local defaultValue = false
+
+        local setting = Settings.RegisterAddOnSetting(category, variable, variable, QuickMark.db.char, type(defaultValue), name, defaultValue)
+        setting:SetValueChangedCallback(function(_, value)
+            if value then
+                QuickMark:Hide()
+            else
+                QuickMark:Show()
+            end
+        end)
+        Settings.CreateCheckbox(category, setting, tooltip)
+    end
+
+    -- Horizontal checkbox
+    do
+        local variable = "QuickMark_Horizontal"
+        local name = "Horizontal"
+        local tooltip = "Display the QuickMark bar horizontally instead of vertically."
+        local defaultValue = false
+
+        local setting = Settings.RegisterAddOnSetting(category, variable, variable, QuickMark.db.char, type(defaultValue), name, defaultValue)
+        setting:SetValueChangedCallback(function(_, value)
+            if value then
+                QuickMark:SetHorizontalLayout()
+            else
+                QuickMark:SetVerticalLayout()
+            end
+        end)
+        Settings.CreateCheckbox(category, setting, tooltip)
+    end
+
+    -- Scale slider
+    do
+        local variable = "QuickMark_Scale"
+        local name = "Scale"
+        local tooltip = "Scale controls the size of the QuickMark bar."
+        local defaultValue = 1.0
+        local minValue = 0.1
+        local maxValue = 5.0
+        local step = 0.1
+
+        local setting = Settings.RegisterAddOnSetting(category, variable, variable, QuickMark.db.char, type(defaultValue), name, defaultValue)
+        setting:SetValueChangedCallback(function(_, value)
+            QuickMark:Scale(value)
+        end)
+
+        local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+        options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
+            return string.format("%.0f%%", value * 100)
+        end)
+        Settings.CreateSlider(category, setting, options, tooltip)
+    end
+
+    -- Border dropdown
+    do
+        local variable = "QuickMark_Border"
+        local name = "Border"
+        local tooltip = "Set the border of the QuickMark bar."
+        local defaultValue = "Interface\\Tooltips\\UI-Tooltip-Border"
+
+        local function GetOptions()
+            local container = Settings.CreateControlTextContainer()
+            for _, opt in ipairs(BORDER_OPTIONS) do
+                container:Add(opt.value, opt.label)
+            end
+            return container:GetData()
+        end
+
+        local setting = Settings.RegisterAddOnSetting(category, variable, variable, QuickMark.db.char, type(defaultValue), name, defaultValue)
+        setting:SetValueChangedCallback(function(_, value)
+            QuickMark:Border(value)
+        end)
+        Settings.CreateDropdown(category, setting, GetOptions, tooltip)
+    end
+
+    Settings.RegisterAddOnCategory(category)
+end
+
+--------------------------------------------------------------------------------
 -- Initialization
 --------------------------------------------------------------------------------
 local DEFAULT_EDGE_FILE = "Interface\\Tooltips\\UI-Tooltip-Border"
@@ -377,6 +464,7 @@ function QuickMark:OnInitialize()
     end)
 
     QuickMark:LoadSettings()
+    QuickMark:SetupSettings()
 end
 
 function QuickMark:OnEnable()
