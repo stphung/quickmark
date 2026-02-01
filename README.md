@@ -87,27 +87,15 @@ Available settings:
 QuickMark/
 ├── QuickMark.lua       # Main addon code
 ├── QuickMark.toc       # Addon metadata
-├── embeds.xml          # Library includes
 ├── LICENSE.txt         # Apache 2.0 License
 ├── README.md           # This file
 ├── CLAUDE.md           # Development guidelines for AI assistants
-├── CHANGES.txt         # Version history
-├── libs/               # Bundled library dependencies
-│   ├── Ace3/           # Ace3 addon framework
-│   ├── LibStub/        # Library stub loader
-│   └── CallbackHandler/
-└── widgets/            # Custom UI widgets
-    └── QuickMarkFrame.lua
+└── CHANGES.txt         # Version history
 ```
 
 ### Dependencies
 
-QuickMark uses the following libraries (bundled in `libs/`):
-- **Ace3**: Addon framework providing AceAddon, AceConsole, AceGUI, AceConfig, and AceDB
-- **LibStub**: Library management
-- **CallbackHandler**: Event callback system
-
-All dependencies are included in the repository. No external build process or package manager is required.
+None. QuickMark uses only native WoW APIs with no external libraries.
 
 ### Building
 
@@ -135,4 +123,4 @@ Licensed under the Apache License 2.0. See [LICENSE.txt](LICENSE.txt) for detail
 
 ## Credits
 
-QuickMark uses the Ace3 framework, developed by the Ace3 team.
+QuickMark was originally built on the Ace3 framework and has since been rewritten to use native WoW APIs.
