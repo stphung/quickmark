@@ -4,12 +4,11 @@ This document provides guidelines for AI assistants (like Claude) when working o
 
 ## Project Overview
 
-**QuickMark** is a World of Warcraft addon that provides a draggable interface for quickly marking targets with raid icons. It's built using the Ace3 framework and targets the retail version of WoW.
+**QuickMark** is a World of Warcraft addon that provides a draggable interface for quickly marking targets with raid icons. It uses native WoW APIs with no external dependencies.
 
 ### Key Technologies
 - **Language**: Lua 5.1 (WoW's embedded Lua version)
-- **Framework**: Ace3 (AceAddon-3.0, AceConsole-3.0, AceGUI-3.0, AceConfig-3.0, AceDB-3.0)
-- **UI System**: Blizzard Settings API (modern WoW settings framework)
+- **UI System**: Native WoW Frame API and Blizzard Settings API
 - **Target Version**: World of Warcraft Retail (The War Within / Midnight)
 
 ## API Reference Sources
@@ -31,71 +30,45 @@ When implementing or modifying features that use WoW API functions, ALWAYS refer
 
 ```
 QuickMark/
-├── QuickMark.lua           # Main addon logic (500+ lines)
-│   ├── Initialization (AceAddon framework)
-│   ├── Frame creation (AceGUI)
+├── QuickMark.lua           # Main addon logic
+│   ├── Frame creation (native WoW Frame API)
 │   ├── Slash command handlers
 │   ├── Settings management (Blizzard Settings API)
-│   └── Database management (AceDB)
+│   └── Saved variables management
 ├── QuickMark.toc           # Addon metadata
-├── embeds.xml              # Library includes (Ace3 components)
-├── libs/                   # Bundled dependencies (DO NOT MODIFY)
-│   └── Ace3/               # Complete Ace3 framework
-└── widgets/                # Custom AceGUI widgets
-    └── QuickMarkFrame.lua  # Custom frame widget
+├── CLAUDE.md               # Development guidelines for AI assistants
+├── CHANGES.txt             # Version history
+├── LICENSE.txt             # Apache 2.0 License
+└── README.md               # Project readme
 ```
 
 ### Key Components
 
-1. **QuickMark.lua** - Main addon file containing:
-   - Frame creation and layout management
+1. **QuickMark.lua** - Main (and only) addon file containing:
+   - Frame creation and layout management using native WoW Frame API
    - Slash command processing
    - Settings panel registration (Blizzard Settings API)
-   - AceDB character-specific settings storage
+   - Saved variables for character-specific storage (`QuickMarkDB`)
    - Position, scale, border, and color management
-
-2. **widgets/QuickMarkFrame.lua** - Custom AceGUI widget:
-   - Defines the draggable frame container
-   - Implements the backdrop and icon layout
-   - Handles click events for target marking
-
-3. **embeds.xml** - Loads required Ace3 libraries:
-   - AceAddon-3.0 (addon framework)
-   - AceConsole-3.0 (slash commands)
-   - AceGUI-3.0 (UI framework)
-   - AceConfig-3.0 (configuration)
-   - AceDB-3.0 (database/saved variables)
 
 ## Development Guidelines
 
 ### Code Style
 
-1. **Use `self` consistently**: Methods should use `self` for instance references, not the global `QuickMark`
+1. **Use the `QuickMark` table consistently**: Methods are defined on the `QuickMark` table using colon syntax and reference `self`
    ```lua
-   -- Good
    function QuickMark:Lock()
-       self.db.char.locked = true
-       self:Debug("Locked")
-   end
-
-   -- Bad
-   function QuickMark:Lock()
-       QuickMark.db.char.locked = true
-       QuickMark:Debug("Locked")
+       frame:SetMovable(false)
+       frame:EnableMouse(false)
+       db.locked = true
+       Debug("Locked")
    end
    ```
 
-2. **Minimize parameter passing**: Avoid unused `info` parameters in callbacks
+2. **Use module-level locals**: The `frame`, `db`, and helper functions like `Debug()` and `Print()` are local to the file
    ```lua
-   -- Good
-   function QuickMark:GetScale()
-       return self.db.char.scale or DEFAULT_SCALE
-   end
-
-   -- Bad
-   function QuickMark:GetScale(info)
-       return self.db.char.scale or DEFAULT_SCALE
-   end
+   local frame -- Main UI frame
+   local db    -- Saved variables reference
    ```
 
 3. **Use constants**: Define magic values at the top of the file
@@ -127,7 +100,7 @@ do
         category,
         "QuickMark_Lock",
         variable,
-        self.db.char,
+        db,
         type(defaultValue),
         name,
         defaultValue
@@ -160,7 +133,7 @@ do
         category,
         "QuickMark_Scale",
         variable,
-        self.db.char,
+        db,
         type(defaultValue),
         name,
         defaultValue
@@ -179,23 +152,24 @@ do
 end
 ```
 
-### Database Management
+### Saved Variables
 
-QuickMark uses AceDB for persistent storage:
+QuickMark uses WoW's native `SavedVariablesPerCharacter` (declared in the `.toc` file) for persistent storage:
 
 ```lua
--- Initialize database
-self.db = AceDB:New("QuickMarkDB")
+-- Initialize saved variables
+QuickMarkDB = QuickMarkDB or {}
+db = QuickMarkDB
 
--- Access character-specific settings
-self.db.char.locked
-self.db.char.scale
-self.db.char.horizontal
-self.db.char.bg_color_r
+-- Access settings directly
+db.locked
+db.scale
+db.horizontal
+db.bg_color_r
 -- etc.
 ```
 
-**Character-specific settings** stored in `self.db.char`:
+**Character-specific settings** stored in `db`:
 - `point`, `relativePoint`, `xOfs`, `yOfs` - Frame position
 - `locked` - Whether the frame is locked
 - `hidden` - Whether the frame is hidden
@@ -212,19 +186,13 @@ self.db.char.bg_color_r
 
 **Solution**: Always verify API functions on https://warcraft.wiki.gg/wiki/World_of_Warcraft_API before using them
 
-#### 2. Inconsistent Self References
+#### 2. Adding External Dependencies
 
-**Problem**: Mixing `self` and `QuickMark` in methods
+**Problem**: Introducing Ace3 or other library dependencies
 
-**Solution**: Use `self` consistently in all methods
+**Solution**: QuickMark was intentionally rewritten to use only native WoW APIs. Do not add external library dependencies.
 
-#### 3. Unused Parameters
-
-**Problem**: Including unused `info` parameters that come from old AceConfig patterns
-
-**Solution**: Remove unused parameters to clean up the code
-
-#### 4. Not Testing Settings Persistence
+#### 3. Not Testing Settings Persistence
 
 **Problem**: Settings don't persist after `/reload` or logout
 
@@ -268,14 +236,13 @@ When implementing new features or fixing bugs:
 
 ### Modifying the Frame
 
-1. Edit `widgets/QuickMarkFrame.lua` for widget changes
-2. Edit `QuickMark:CreateQuickMarkFrame()` for icon/layout changes
+1. Edit `CreateQuickMarkFrame()` in `QuickMark.lua` for frame/icon changes
+2. Edit layout functions (`SetHorizontalLayout`/`SetVerticalLayout`) for orientation changes
 3. Test with different scales and orientations
 
 ## References
 
 - **WoW API**: https://warcraft.wiki.gg/wiki/World_of_Warcraft_API
-- **Ace3 Documentation**: https://www.wowace.com/projects/ace3
 - **Blizzard Settings API**: https://warcraft.wiki.gg/wiki/Patch_10.0.0/API_changes#Settings
 - **UI Widgets**: https://warcraft.wiki.gg/wiki/Using_UIObjects
 
