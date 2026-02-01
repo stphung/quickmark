@@ -1,7 +1,7 @@
 # QuickMark
 
 > [!WARNING]
-> ## QuickMark is discontinued
+> ## ⚠️ QuickMark is discontinued
 >
 > QuickMark is no longer maintained due to breaking API changes in
 > World of Warcraft: Midnight (Patch 12.0.0).
