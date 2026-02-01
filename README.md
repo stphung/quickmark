@@ -1,5 +1,7 @@
 # QuickMark
 
+> **⚠️ Discontinued**: QuickMark is no longer maintained due to breaking API changes introduced in World of Warcraft: Midnight. The addon may not function correctly in Midnight or later expansions.
+
 A lightweight World of Warcraft addon that provides a convenient, draggable interface for quickly marking enemy targets with raid icons.
 
 ## Features
