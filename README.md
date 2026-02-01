@@ -1,6 +1,19 @@
 # QuickMark
 
-> **⚠️ Discontinued**: QuickMark is no longer maintained. World of Warcraft: Midnight (Patch 12.0.0) introduced "[Addon Disarmament](https://news.blizzard.com/en-us/article/24246290/combat-philosophy-and-addon-disarmament-in-midnight)", the largest addon API overhaul in WoW's history. Among the changes, `SetRaidTarget` now requires the secure action button framework (`SecureActionButtonTemplate`) instead of being directly callable from addon code. Since QuickMark's entire purpose is one-click raid target marking, this change breaks its core functionality. QuickMark is far from alone: WeakAuras, ElvUI, and many other addons were also discontinued as a result of these changes.
+> [!WARNING]
+> ## ⚠️ QuickMark is discontinued
+>
+> QuickMark is no longer maintained due to breaking API changes in
+> World of Warcraft: Midnight (Patch 12.0.0).
+>
+> **What happened:** Blizzard's
+> "[Addon Disarmament](https://news.blizzard.com/en-us/article/24246290/combat-philosophy-and-addon-disarmament-in-midnight)"
+> moved `SetRaidTarget` behind `SecureActionButtonTemplate`, breaking
+> QuickMark's core click-to-mark functionality. WeakAuras, ElvUI, and
+> many other addons were also discontinued as a result.
+>
+> **Alternative:** Use WoW's built-in raid marker UI
+> (right-click target portrait or bind raid markers in Key Bindings > Raid Target).
 
 A lightweight World of Warcraft addon that provides a convenient, draggable interface for quickly marking enemy targets with raid icons.
 
